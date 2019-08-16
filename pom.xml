@@ -12,14 +12,24 @@
     <modules>
         <module>privacy-annotations</module>
         <module>jackson-module</module>
+        <module>crypto-module</module>
+        <module>mongo-adapter</module>
     </modules>
 
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
+        <persistenceprivacy.version>0.1.0-SNAPSHOT</persistenceprivacy.version>
+        <jackson.version>2.10.0.pr1</jackson.version>
+        <spring.version>2.1.9.RELEASE</spring.version>
     </properties>
 
     <dependencies>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

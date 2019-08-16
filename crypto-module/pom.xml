@@ -10,16 +10,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>privacy-annotations</artifactId>
+    <artifactId>crypto-module</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0-SNAPSHOT</version>
-    <modules>
-        <module>../mongo-persistence-example</module>
-    </modules>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <maven.compiler.release>11</maven.compiler.release>
-    </properties>
 </project>

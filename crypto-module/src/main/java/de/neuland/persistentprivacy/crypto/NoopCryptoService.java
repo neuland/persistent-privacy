@@ -1,4 +1,4 @@
-package de.neuland.persistentprivacy.example;
+package de.neuland.persistentprivacy.crypto;
 
 import de.neuland.persistentprivacy.crypto.CryptedData;
 import de.neuland.persistentprivacy.crypto.CryptoService;

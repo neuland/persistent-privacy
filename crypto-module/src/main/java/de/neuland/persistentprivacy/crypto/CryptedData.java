@@ -1,14 +1,15 @@
 package de.neuland.persistentprivacy.crypto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Base64;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator} )
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class CryptedData {
     @JsonProperty
     private String data;
