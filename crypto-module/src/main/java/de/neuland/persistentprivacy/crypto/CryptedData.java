@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Base64;
 
+@SuppressWarnings("WeakerAccess")
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator} )
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -35,6 +36,21 @@ public class CryptedData {
 
     public String keyRef() {
         return keyRef;
+    }
+
+    public String serializeAsString() {
+        return serializeAsString("$crypt");
+    }
+    public String serializeAsString(String prefix) {
+        if (prefix.contains(":")) {
+            throw new IllegalArgumentException("Prefix must not contain colons!");
+        }
+        return String.format("%s:%s:%s:%s", prefix, keyRef, iv, data);
+    }
+
+    public static CryptedData deserializeFromString(String str) {
+        String[] split = str.split(":");
+        return new CryptedData(split[3], split[2], split[1]);
     }
 
 }

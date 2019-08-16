@@ -13,6 +13,14 @@
     <artifactId>crypto-module</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.1.8.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <modelVersion>4.0.0</modelVersion>
 
