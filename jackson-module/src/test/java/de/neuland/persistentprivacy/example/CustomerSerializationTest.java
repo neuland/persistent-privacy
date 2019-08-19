@@ -8,28 +8,30 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class CustomerSerializationTest {
 
     private ObjectMapper privacyProtectingMapper;
-    private ObjectMapper standardMapper;
 
-    private Customer customer = new Customer("max.mustermann@example.com", "hashedpasswd", "Max","Mustermann");
+    private Customer customer = new Customer("max.mustermann@example.com", "hashedpasswd", "Max", "Mustermann");
 
     @BeforeEach
     void setUp() {
-
-        standardMapper = new ObjectMapper();
-
         privacyProtectingMapper = new ObjectMapper()
                 .registerModule(new PersonalDataEncryptionModule(new NoopCryptoService()));
-
-
     }
 
     @Test
     void smokeTest() throws JsonProcessingException {
-        System.out.println(standardMapper.writerWithDefaultPrettyPrinter().writeValueAsString(customer));
-        System.out.println(privacyProtectingMapper.writerWithDefaultPrettyPrinter().writeValueAsString(customer));
+        String json = privacyProtectingMapper.writerWithDefaultPrettyPrinter().writeValueAsString(customer);
+        assertThat(json).isNotNull()
+                .doesNotContain("\"firstName\"")
+                .doesNotContain("\"lastName\"")
+                .contains("$personal_data")
+                .contains("\"emailAddress\"")
+                .doesNotContain("max.mustermann@example.com");
+        System.out.println(json);
     }
 
     @Test
@@ -38,6 +40,8 @@ class CustomerSerializationTest {
         System.out.println(json);
         Customer restored = privacyProtectingMapper.readValue(json, Customer.class);
 
-        Assertions.assertThat(restored).isEqualToComparingFieldByField(customer);
+        assertThat(restored).isEqualToComparingFieldByField(customer);
+        assertThat(restored.getEmailAddress()).isEqualTo("max.mustermann@example.com");
+
     }
 }

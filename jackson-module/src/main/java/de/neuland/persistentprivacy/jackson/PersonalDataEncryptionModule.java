@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import de.neuland.persistentprivacy.annotations.PersonalData;
+import de.neuland.persistentprivacy.annotations.Pseudonymized;
 import de.neuland.persistentprivacy.crypto.CryptoService;
 
 import java.util.ArrayList;
@@ -29,12 +30,17 @@ public class PersonalDataEncryptionModule extends SimpleModule {
             public java.util.List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties) {
 
                 List<BeanPropertyWriter> requiringEncryption = new ArrayList<>();
+                List<BeanPropertyWriter> requiringPseydonymization = new ArrayList<>();
+
 
                 List<BeanPropertyWriter> result = beanProperties.stream()
                         .filter(bpw -> {
-                            boolean isPersonalData = bpw.getAnnotation(PersonalData.class) != null;
+                            boolean isPersonalData = isPersonalData(bpw);
                             if (isPersonalData) {
                                 requiringEncryption.add(bpw);
+                                if (isPseuonymizedData(bpw)) {
+                                    requiringPseydonymization.add(new PseudonymizingBeanPropertyWriter(bpw, cryptoService));
+                                }
                             }
                             return !isPersonalData;
                         })
@@ -44,6 +50,8 @@ public class PersonalDataEncryptionModule extends SimpleModule {
                     return beanProperties;
                 }
 
+                result.addAll(requiringPseydonymization);
+
                 result.add(
                         new EncryptedBeanPropertyWriter(requiringEncryption, cryptoService)
                 );
@@ -51,6 +59,14 @@ public class PersonalDataEncryptionModule extends SimpleModule {
                 return result;
             }
         });
+    }
+
+    private boolean isPersonalData(BeanPropertyWriter bpw) {
+        return bpw.getAnnotation(PersonalData.class) != null || isPseuonymizedData(bpw);
+    }
+
+    private boolean isPseuonymizedData(BeanPropertyWriter bpw) {
+        return bpw.getAnnotation(Pseudonymized.class) != null;
     }
 
 

@@ -2,12 +2,15 @@ package de.neuland.persistentprivacy.crypto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Base64;
+import java.util.Optional;
 
 @SuppressWarnings("WeakerAccess")
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator} )
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
@@ -18,6 +21,13 @@ public class CryptedData {
     private String iv;
     @JsonProperty
     private String keyRef;
+
+    @JsonCreator
+    private CryptedData(@JsonProperty("data") String data, @JsonProperty("iv") String iv, @JsonProperty("keyRef") String keyRef) {
+        this.data = data;
+        this.iv = iv;
+        this.keyRef = keyRef;
+    }
 
     public static CryptedData create(byte[] cipherText, byte[] iv, String keyRef) {
         return new CryptedData(
@@ -38,9 +48,6 @@ public class CryptedData {
         return keyRef;
     }
 
-    public String serializeAsString() {
-        return serializeAsString("$crypt");
-    }
     public String serializeAsString(String prefix) {
         if (prefix.contains(":")) {
             throw new IllegalArgumentException("Prefix must not contain colons!");
@@ -49,8 +56,18 @@ public class CryptedData {
     }
 
     public static CryptedData deserializeFromString(String str) {
+        return tryDeserializeFromString(str).orElse(null);
+    }
+
+    public static Optional<CryptedData> tryDeserializeFromString(String str) {
+        if (str == null) {
+            return Optional.empty();
+        }
         String[] split = str.split(":");
-        return new CryptedData(split[3], split[2], split[1]);
+        if (split.length != 4) {
+            return Optional.empty();
+        }
+        return Optional.of(new CryptedData(split[3], split[2], split[1]));
     }
 
 }

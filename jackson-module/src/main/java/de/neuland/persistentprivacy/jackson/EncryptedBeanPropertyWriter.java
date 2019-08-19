@@ -25,8 +25,6 @@ class EncryptedBeanPropertyWriter extends BeanPropertyWriter {
         this.cryptoService = cryptoService;
     }
 
-
-
     @Override
     public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
         if (shouldEncrypt(prov)) {

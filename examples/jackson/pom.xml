@@ -5,26 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.neuland.persistentprivacy</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>jackson-example</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>jackson-module</module>
-        <module>crypto-module</module>
-        <module>mongo-adapter</module>
-        <module>jpa-hibernate-adapter</module>
-    </modules>
 
     <properties>
-        <maven.compiler.release>11</maven.compiler.release>
-        <persistenceprivacy.version>0.1.0-SNAPSHOT</persistenceprivacy.version>
+        <java.version>11</java.version>
+        <junit-jupiter.version>5.5.1</junit-jupiter.version>
         <jackson.version>2.10.0.pr1</jackson.version>
-        <!-- FIXME: Das ist die spring boot version-->
-        <spring.version>2.1.9.RELEASE</spring.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>de.neuland.persistentprivacy</groupId>
+            <artifactId>jackson-module</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -47,22 +43,15 @@
             <scope>test</scope>
         </dependency>
 
-
     </dependencies>
-
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <release>11</release>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-
     </build>
 
 </project>

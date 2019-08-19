@@ -1,8 +1,11 @@
 package de.neuland.persistentprivacy.crypto;
 
-import de.neuland.persistentprivacy.crypto.CryptedData;
-import de.neuland.persistentprivacy.crypto.CryptoService;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
 
+/**
+ *
+ *
+ */
 public class NoopCryptoService implements CryptoService {
 
     @Override
@@ -13,5 +16,10 @@ public class NoopCryptoService implements CryptoService {
     @Override
     public CryptedData encrypt(byte[] data) {
         return CryptedData.create(data, new byte[0], "");
+    }
+
+    @Override
+    public byte[] pseudonymize(byte[] data) {
+        return new SHA3.Digest256().digest(data);
     }
 }

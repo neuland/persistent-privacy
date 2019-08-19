@@ -30,12 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>de.neuland.persistentprivacy</groupId>
-            <artifactId>privacy-annotations</artifactId>
-            <version>${persistenceprivacy.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
             <version>${spring.version}</version>

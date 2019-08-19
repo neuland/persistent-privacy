@@ -37,7 +37,6 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
         this.objectMapper = personalDataObjectMapper;
     }
 
-
     @Override
     public void onBeforeSave(BeforeSaveEvent<Object> event) {
 

@@ -17,11 +17,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>de.neuland.persistentprivacy</groupId>
-            <artifactId>privacy-annotations</artifactId>
-            <version>${persistenceprivacy.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>de.neuland.persistentprivacy</groupId>
