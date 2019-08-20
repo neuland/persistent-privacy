@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class PrivacyProtectionListener extends AbstractMongoEventListener<Object> {
 
-    private static final String FIELD_NAME = "_personal_data";
+    public static final String FIELD_NAME = "_personal_data";
 
     private CryptoService cryptoService;
 

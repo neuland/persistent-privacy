@@ -1,6 +1,7 @@
 package de.neuland.persistentprivacy.crypto;
 
 import lombok.SneakyThrows;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
@@ -55,7 +56,7 @@ public class DefaultCryptoService implements CryptoService {
 
     @Override
     public byte[] pseudonymize(byte[] data) {
-        return new byte[0];
+        return new SHA3.Digest256().digest(data);
     }
 
 
