@@ -7,13 +7,10 @@ import de.neuland.persistentprivacy.crypto.CryptoService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterConvertEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterLoadEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -21,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
 @Slf4j
 public class PrivacyProtectionListener extends AbstractMongoEventListener<Object> {
 
@@ -31,8 +27,7 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
 
     private ObjectMapper objectMapper;
 
-    @Autowired
-    public PrivacyProtectionListener(CryptoService cryptoService, @Qualifier("personalDataObjectMapper") ObjectMapper personalDataObjectMapper) {
+    public PrivacyProtectionListener(CryptoService cryptoService,  ObjectMapper personalDataObjectMapper) {
         this.cryptoService = cryptoService;
         this.objectMapper = personalDataObjectMapper;
     }

@@ -2,8 +2,11 @@ package de.neuland.persistentprivacy.mongodb.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.neuland.persistentprivacy.crypto.*;
+import de.neuland.persistentprivacy.mongodb.PrivacyProtectionListener;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.mapping.event.MongoMappingEvent;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -26,15 +29,12 @@ public class ExampleConfiguration {
             return new KeyData("key",key);
         }
     };
-    @Bean
-    public CryptoService cryptoService() {
-        return new DefaultCryptoService(keyRepository);
-    }
 
     @Bean
-    public ObjectMapper personalDataObjectMapper() {
-        return new ObjectMapper();
+    public ApplicationListener<MongoMappingEvent<?>> privacyProtectionListener() {
+        CryptoService cryptoService = new DefaultCryptoService(keyRepository);
+        ObjectMapper personalDataObjectMapper = new ObjectMapper();
+        return new PrivacyProtectionListener(cryptoService, personalDataObjectMapper);
     }
-
 
 }

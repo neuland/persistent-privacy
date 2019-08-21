@@ -2,15 +2,10 @@ package de.neuland.persistentprivacy.mongodb.example;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import de.neuland.persistentprivacy.mongodb.PrivacyProtectionListener;
-import org.assertj.core.api.Assertions;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,10 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.GenericContainer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +41,7 @@ class CustomerPersistenceTest {
     private Customer customer = new Customer("max@mustermann.de", "Max", "Mustermann");
 
     @Test
-    void shouldSave() {
+    void shouldEncryptOnSave() {
         Customer save = customerRepository.save(customer);
 
         Optional<Customer> byId = customerRepository.findById(save.getId());
