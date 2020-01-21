@@ -85,7 +85,7 @@ public class ExampleConfiguration {
 
     @Bean
     public ApplicationListener<MongoMappingEvent<?>> privacyProtectionListener() {
-        CryptoService cryptoService = new DefaultCryptoService(keyRepository);
+        CryptoService cryptoService = new ExampleCryptoService(keyRepository);
         ObjectMapper personalDataObjectMapper = new ObjectMapper();
         return new PrivacyProtectionListener(cryptoService, personalDataObjectMapper);
     }
