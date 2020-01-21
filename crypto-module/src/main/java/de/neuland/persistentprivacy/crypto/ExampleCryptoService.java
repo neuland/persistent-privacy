@@ -7,7 +7,10 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import java.security.SecureRandom;
 
-public class DefaultCryptoService implements CryptoService {
+/**
+ * This is an EXAMPLE crypto service intended for demo purposes and NOT READY FOR PRODUCTION!
+ */
+public class ExampleCryptoService implements CryptoService {
 
     private static final int GCM_TAG_LENGTH_BITS = 128;
     private static final int GCM_NONCE_LENGTH_BYTES = 12;
@@ -17,7 +20,7 @@ public class DefaultCryptoService implements CryptoService {
     private SecureRandom random;
 
     @SneakyThrows
-    public DefaultCryptoService(KeyRepository keyRepository) {
+    public ExampleCryptoService(KeyRepository keyRepository) {
         this.keyRepository = keyRepository;
         random = SecureRandom.getInstance("NativePRNGNonBlocking");
     }
@@ -25,12 +28,10 @@ public class DefaultCryptoService implements CryptoService {
     @SneakyThrows
     @Override
     public byte[] decrypt(CryptedData cryptedData) {
-
         Cipher cipher = cipher();
         GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH_BITS, cryptedData.iv());
         cipher.init(Cipher.DECRYPT_MODE, keyRepository.keyForName(cryptedData.keyRef()), spec);
         return cipher.doFinal(cryptedData.data());
-
     }
 
     @SneakyThrows

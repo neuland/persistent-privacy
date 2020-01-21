@@ -36,12 +36,19 @@ public class CryptedData {
                 keyRef);
     }
 
+    public static CryptedData inlineIv(byte[] cipherText, String keyRef) {
+        return new CryptedData(
+                Base64.getEncoder().encodeToString(cipherText),
+                null,
+                keyRef);
+    }
+
     public byte[] data() {
         return Base64.getDecoder().decode(data);
     }
 
     public byte[] iv() {
-        return Base64.getDecoder().decode(iv);
+        return iv != null ? Base64.getDecoder().decode(iv) : new byte[0];
     }
 
     public String keyRef() {

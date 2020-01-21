@@ -27,7 +27,7 @@ public class PersistentPrivacyConfiguration {
     };
     @Bean
     public CryptoService cryptoService() {
-        return new DefaultCryptoService(keyRepository);
+        return new ExampleCryptoService(keyRepository);
     }
 
 }

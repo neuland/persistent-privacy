@@ -3,8 +3,7 @@ package de.neuland.persistentprivacy.crypto;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 
 /**
- *
- *
+ * Doesn't encrypt at all. Only for demo/test purposes
  */
 public class NoopCryptoService implements CryptoService {
 
