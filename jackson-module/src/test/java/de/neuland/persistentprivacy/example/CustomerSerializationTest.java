@@ -2,9 +2,16 @@ package de.neuland.persistentprivacy.example;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.aead.AeadConfig;
+import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.proto.KeyTemplate;
 import de.neuland.persistentprivacy.crypto.NoopCryptoService;
+import de.neuland.persistentprivacy.crypto.TinkCryptoService;
+import de.neuland.persistentprivacy.crypto.TinkKeysetRepository;
 import de.neuland.persistentprivacy.jackson.PersonalDataEncryptionModule;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +22,32 @@ class CustomerSerializationTest {
     private ObjectMapper privacyProtectingMapper;
 
     private Customer customer = new Customer("max.mustermann@example.com", "hashedpasswd", "Max", "Mustermann");
+    private static KeysetHandle keysetHandle;
+
+    @BeforeAll
+    static void beforeAll() throws Exception {
+        AeadConfig.register();
+        KeyTemplate keyTemplate = AeadKeyTemplates.AES128_GCM;
+        keysetHandle = KeysetHandle.generateNew(keyTemplate);
+    }
 
     @BeforeEach
     void setUp() {
+        TinkCryptoService tinkCryptoService = new TinkCryptoService(new TinkKeysetRepository() {
+            @Override
+            public KeysetHandle defaultKeyset() {
+                return keysetHandle;
+            }
+
+            @Override
+            public KeysetHandle forKeyId(String keyId) {
+                return keysetHandle;
+            }
+        });
+
+
         privacyProtectingMapper = new ObjectMapper()
-                .registerModule(new PersonalDataEncryptionModule(new NoopCryptoService()));
+                .registerModule(new PersonalDataEncryptionModule(tinkCryptoService));
     }
 
     @Test
@@ -42,6 +70,8 @@ class CustomerSerializationTest {
 
         assertThat(restored).isEqualToComparingFieldByField(customer);
         assertThat(restored.getEmailAddress()).isEqualTo("max.mustermann@example.com");
+        assertThat(restored.getFirstName()).isEqualTo(customer.getFirstName());
+        assertThat(restored.getLastName()).isEqualTo(customer.getLastName());
 
     }
 }
