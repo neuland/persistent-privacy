@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>crypto-module</artifactId>
-    <packaging>pom</packaging>
+<!--    <packaging>pom</packaging>-->
     <version>0.1.0-SNAPSHOT</version>
 
     <dependencies>

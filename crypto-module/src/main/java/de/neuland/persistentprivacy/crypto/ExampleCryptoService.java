@@ -8,7 +8,9 @@ import javax.crypto.spec.GCMParameterSpec;
 import java.security.SecureRandom;
 
 /**
- * This is an EXAMPLE crypto service intended for demo purposes and NOT READY FOR PRODUCTION!
+ * Example crypto service based on GCM (see https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cryptographic_Storage_Cheat_Sheet.md).
+ *
+ * This is SAMPLE code intended for demo purposes and <b>NOT READY FOR PRODUCTION</b>!
  */
 public class ExampleCryptoService implements CryptoService {
 

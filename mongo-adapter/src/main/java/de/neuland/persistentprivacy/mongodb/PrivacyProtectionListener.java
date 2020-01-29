@@ -2,6 +2,7 @@ package de.neuland.persistentprivacy.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.neuland.persistentprivacy.annotations.PersonalData;
+import de.neuland.persistentprivacy.annotations.Pseudonymized;
 import de.neuland.persistentprivacy.crypto.CryptedData;
 import de.neuland.persistentprivacy.crypto.CryptoService;
 import lombok.SneakyThrows;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.event.AfterLoadEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +38,7 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
     public void onBeforeSave(BeforeSaveEvent<Object> event) {
 
         try {
-            if (event.getDocument() != null) {
+            if (event.getDocument() != null && event.getSource() != null) {
                 Map<String, Object> personalData = personalData(event.getSource());
 
                 if (!personalData.isEmpty()) {
@@ -46,6 +48,7 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
                     CryptedData cryptedData = cryptoService.encrypt(objectMapper.writeValueAsBytes(personalData));
 
                     document.append(FIELD_NAME, toDocument(cryptedData));
+                    pseudonymize(event.getSource(), document);
                 }
             }
 
@@ -80,15 +83,11 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
     }
 
     private Map<String, Object> personalData(Object source) throws IllegalAccessException {
-        if (source == null) {
-            return Collections.emptyMap();
-        }
-
         Map<String, Object> personalData = new HashMap<>();
 
         Field[] fields = source.getClass().getDeclaredFields();
         for (var f : fields) {
-            if (f.getAnnotation(PersonalData.class) != null) {
+            if (isPersonalData(f)) {
                 f.setAccessible(true);
                 Object value = f.get(source);
                 // TODO also return mongo column name if deviating
@@ -98,6 +97,32 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
 
         return personalData;
     }
+
+    private void pseudonymize(Object source, Document to) throws IllegalAccessException {
+        Field[] fields = source.getClass().getDeclaredFields();
+        for (var f : fields) {
+            if (isPseudonymizedData(f)) {
+                f.setAccessible(true);
+                Object value = f.get(source);
+                // TODO also return mongo column name if deviating
+                if ( value != null) {
+                    String pseudonymized = cryptoService.pseudonymizeAsHex(value.toString().getBytes(StandardCharsets.UTF_8));
+                    to.put(f.getName(), pseudonymized);
+                }
+
+            }
+        }
+
+    }
+
+    private boolean isPersonalData(Field field) {
+        return field.getAnnotation(PersonalData.class) != null || isPseudonymizedData(field);
+    }
+
+    private boolean isPseudonymizedData(Field field) {
+        return field.getAnnotation(Pseudonymized.class) != null;
+    }
+
 
     @Override
     public void onAfterLoad(AfterLoadEvent<Object> event) {
@@ -118,7 +143,7 @@ public class PrivacyProtectionListener extends AbstractMongoEventListener<Object
     @SneakyThrows
     private void merge(Object personalData, Object into) {
         for (Field f : personalData.getClass().getDeclaredFields()) {
-            if (f.getAnnotation(PersonalData.class) != null) {
+            if (isPersonalData(f)) {
                 f.setAccessible(true);
                 Object personalValue = f.get(personalData);
                 f.set(into, personalValue);

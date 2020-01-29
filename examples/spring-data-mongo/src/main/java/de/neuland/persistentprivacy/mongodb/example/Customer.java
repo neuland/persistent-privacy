@@ -1,11 +1,13 @@
 package de.neuland.persistentprivacy.mongodb.example;
 
 import de.neuland.persistentprivacy.annotations.PersonalData;
+import de.neuland.persistentprivacy.annotations.Pseudonymized;
 import org.springframework.data.annotation.Id;
 
 public class Customer {
     @Id
     private String id;
+    @Pseudonymized
     private String email;
     @PersonalData
     private String firstName;

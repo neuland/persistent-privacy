@@ -21,8 +21,6 @@ public class CryptoInterceptor extends EmptyInterceptor {
     @Autowired
     private CryptoService cryptoService;
 
-    private Map<Object, List<Field>> personalDataFields = new HashMap<>();
-
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
         return cryptPersonalDataFields(entity, state, propertyNames);
@@ -33,9 +31,7 @@ public class CryptoInterceptor extends EmptyInterceptor {
         for (int i = 0; i < propertyNames.length; i++) {
             if (personalDataPropertyNames.contains(propertyNames[i])) {
                 byte[] bytes = toByteArray(state[i]);
-                if (bytes != null) {
-                    state[i] = serializeAsString(cryptoService.encrypt(bytes));
-                }
+                state[i] = serializeAsString(cryptoService.encrypt(bytes));
             }
         }
         return !personalDataPropertyNames.isEmpty();
@@ -100,15 +96,6 @@ public class CryptoInterceptor extends EmptyInterceptor {
                 .filter(this::isPersonalDataField)
                 .peek(f -> f.setAccessible(true))
                 .collect(Collectors.toList());
-
-//        return personalDataFields.computeIfAbsent(
-//                entity.getClass(),
-//                e -> Arrays
-//                        .stream(e.getClass().getDeclaredFields())
-//                        .filter(this::isPersonalDataField)
-//                        .peek(f -> f.setAccessible(true))
-//                        .collect(Collectors.toList())
-//        );
     }
 
     private boolean isPersonalDataField(Field f) {

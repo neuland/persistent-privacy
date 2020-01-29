@@ -2,12 +2,15 @@ package de.neuland.persistentprivacy.crypto;
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.aead.AeadConfig;
 import lombok.SneakyThrows;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 
 /**
  * Sample Crypto service based on google tink.
+ * <p>
+ * See https://owasp-top-10-proactive-controls-2018.readthedocs.io/en/latest/c8-protect-data-everywhere.html#encrypting-data-at-rest.
+ * <p>
+ * This is SAMPLE code intended for demo purposes and <b>NOT READY FOR PRODUCTION</b>!
  */
 public class TinkCryptoService implements CryptoService {
 

@@ -46,6 +46,8 @@ class CustomerPersistenceTest {
 
         Optional<Customer> byId = customerRepository.findById(save.getId());
         assertThat(byId).isPresent();
+        assertThat(byId.get().getEmail()).isEqualTo(customer.getEmail());
+        assertThat(byId.get().getLastName()).isEqualTo(customer.getLastName());
 
         FindIterable<Document> documents = mongoClient
                 .getDatabase("test")
@@ -55,6 +57,7 @@ class CustomerPersistenceTest {
         for (Document d: documents) {
             assertThat(d.getString("firstName")).isNull();
             assertThat(d.getString("lastName")).isNull();
+            assertThat(d.getString("email")).isNotNull().isNotEqualTo("max@mustermann.de");
 
             assertThat(d.get(PrivacyProtectionListener.FIELD_NAME)).isNotNull().isInstanceOfSatisfying(Document.class, sub -> {
                 assertThat(sub.getString("data")).isNotNull();

@@ -10,7 +10,9 @@ import de.neuland.persistentprivacy.crypto.NoopCryptoService;
 import de.neuland.persistentprivacy.crypto.TinkCryptoService;
 import de.neuland.persistentprivacy.crypto.TinkKeysetRepository;
 import de.neuland.persistentprivacy.jackson.PersonalDataEncryptionModule;
+import org.apache.commons.codec.binary.Hex;
 import org.assertj.core.api.Assertions;
+import org.bouncycastle.crypto.generators.BCrypt;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,11 @@ class CustomerSerializationTest {
 
     private ObjectMapper privacyProtectingMapper;
 
-    private Customer customer = new Customer("max.mustermann@example.com", "hashedpasswd", "Max", "Mustermann");
+    private Customer customer = new Customer("max.mustermann@example.com",
+            "$2y$12$xrh9tvl5WHna89.Od21EfuLanukZFYszmpuyNJwNTdmfAmHdQZW4W",
+            "Max",
+            "Mustermann"
+    );
     private static KeysetHandle keysetHandle;
 
     @BeforeAll

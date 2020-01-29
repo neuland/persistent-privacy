@@ -2,6 +2,7 @@ package de.neuland.persistentprivacy.crypto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

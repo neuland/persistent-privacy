@@ -32,13 +32,12 @@ public class PersonalDataEncryptionModule extends SimpleModule {
                 List<BeanPropertyWriter> requiringEncryption = new ArrayList<>();
                 List<BeanPropertyWriter> requiringPseydonymization = new ArrayList<>();
 
-
                 List<BeanPropertyWriter> result = beanProperties.stream()
                         .filter(bpw -> {
                             boolean isPersonalData = isPersonalData(bpw);
                             if (isPersonalData) {
                                 requiringEncryption.add(bpw);
-                                if (isPseuonymizedData(bpw)) {
+                                if (isPseudonymizedData(bpw)) {
                                     requiringPseydonymization.add(new PseudonymizingBeanPropertyWriter(bpw, cryptoService));
                                 }
                             }
@@ -62,10 +61,10 @@ public class PersonalDataEncryptionModule extends SimpleModule {
     }
 
     private boolean isPersonalData(BeanPropertyWriter bpw) {
-        return bpw.getAnnotation(PersonalData.class) != null || isPseuonymizedData(bpw);
+        return bpw.getAnnotation(PersonalData.class) != null || isPseudonymizedData(bpw);
     }
 
-    private boolean isPseuonymizedData(BeanPropertyWriter bpw) {
+    private boolean isPseudonymizedData(BeanPropertyWriter bpw) {
         return bpw.getAnnotation(Pseudonymized.class) != null;
     }
 
